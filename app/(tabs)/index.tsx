@@ -18,8 +18,8 @@ export default function HomeScreen() {
         colors={[themeColors.ambientBackgroundStart, themeColors.ambientBackgroundEnd]}
         style={styles.fullScreenBackground}
       >
-          
-          <Spacer height={10} />
+
+        <Spacer height={20} />
 
         {isSearchActive ? (
           <ThemedView style={styles.headerBar}>
@@ -39,23 +39,35 @@ export default function HomeScreen() {
         ) : (
           <ThemedView style={styles.headerBar}>
             <ThemedText style={[styles.locationText, { color: themeColors.text }]}>Lagos, Nigeria 📍</ThemedText>
-            <TouchableOpacity onPress={() => setIsSearchActive(true)} style={styles.searchIcon}>
+            <TouchableOpacity onPress={() => setIsSearchActive(true)}>
               <ThemedText style={{ color: themeColors.text, fontSize: 24 }}>🔍</ThemedText>
             </TouchableOpacity>
           </ThemedView>
         )}
-        
-        <ScrollView 
+
+        <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}>
 
-          <Spacer />
+          <Spacer height={30} />
 
           <ThemedView style={styles.heroContainer}>
-            <ThemedText style={[styles.heroTemp, { color: themeColors.text }]}>28°C</ThemedText>
+            <ThemedView style={{ flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: 'transparent' }}>
+              <ThemedText style={[styles.heroTemp, { color: themeColors.text }]}>🌤️</ThemedText>
+              <ThemedText style={[styles.heroTemp, { color: themeColors.text }]}>28°C</ThemedText>
+            </ThemedView>
+            
+            <Spacer height={20} />
+
             <ThemedText style={[styles.heroDescription, { color: themeColors.text }]}>Mostly Sunny</ThemedText>
-            <ThemedText style={[styles.heroDetails, { color: themeColors.subtext }]}>
-              Feels like 30°C | H: 32°C / L: 24°C
+            <ThemedText style={[styles.heroDetails, { color: themeColors.subtext, fontWeight: 'semibold' }]}>
+              Feels like 30°C
+            </ThemedText>
+
+            <Spacer />
+
+            <ThemedText style={[styles.heroDetails, { color: themeColors.subtext, fontWeight: 'semibold' }]}>
+               H: 32°C / L: 24°C
             </ThemedText>
           </ThemedView>
 
@@ -72,7 +84,7 @@ export default function HomeScreen() {
                 { time: '9 PM', temp: '23°C', icon: '🌙' },
               ].map((item, index) => (
                 <ThemedView key={index} style={styles.hourlyItem}>
-                  <ThemedText style={[styles.hourlyTime, { color: themeColors.subtext }]}>{item.time}</ThemedText>
+                  <ThemedText style={[styles.hourlyTime, { color: themeColors.subtext, fontWeight: 'semibold' }]}>{item.time}</ThemedText>
                   <ThemedText style={styles.hourlyIcon}>{item.icon}</ThemedText>
                   <ThemedText style={[styles.hourlyTemp, { color: themeColors.text }]}>{item.temp}</ThemedText>
                 </ThemedView>
@@ -80,39 +92,44 @@ export default function HomeScreen() {
             </ScrollView>
           </ThemedView>
 
-          <ThemedView style={[styles.card, { backgroundColor: themeColors.background }]}>
             <ThemedView style={styles.metricsGrid}>
-              <ThemedView style={styles.metricItem}><ThemedText>💨 **Wind Speed**</ThemedText><ThemedText>**15 km/h**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>💧 **Humidity**</ThemedText><ThemedText>**75%**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>🧴 **UV Index**</ThemedText><ThemedText>**8 (High)**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>☔ **Precipitation**</ThemedText><ThemedText>**0% chance**</ThemedText></ThemedView>
+              <ThemedView style={[styles.metricCard, { backgroundColor: themeColors.background }]}>
+              <ThemedView style={styles.metricItem}>
+                <ThemedText style={{ fontWeight: 'semibold' }}>💨</ThemedText>
+                <ThemedView style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <ThemedText style={{ fontWeight: 'semibold' }}>Wind Speed</ThemedText>
+                  <ThemedText style={{ fontWeight: 'bold' }}>15 km/h</ThemedText>
+                </ThemedView>
+              </ThemedView>
+              </ThemedView>
+              <ThemedView style={[styles.metricCard, { backgroundColor: themeColors.background }]}>
+              <ThemedView style={styles.metricItem}>
+                <ThemedText style={{ fontWeight: 'semibold' }}>💧</ThemedText>
+                <ThemedView style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <ThemedText style={{ fontWeight: 'semibold' }}>Humidity</ThemedText>
+                  <ThemedText style={{ fontWeight: 'bold' }}>75%</ThemedText>
+                </ThemedView>
+              </ThemedView>
+              </ThemedView>
+              <ThemedView style={[styles.metricCard, { backgroundColor: themeColors.background }]}>
+              <ThemedView style={styles.metricItem}>
+                <ThemedText style={{ fontWeight: 'semibold' }}>🧴</ThemedText>
+                <ThemedView style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <ThemedText style={{ fontWeight: 'semibold' }}>UV Index</ThemedText>
+                  <ThemedText style={{ fontWeight: 'bold' }}>8 (High)</ThemedText>
+                </ThemedView>
+              </ThemedView>
+              </ThemedView>
+              <ThemedView style={[styles.metricCard, { backgroundColor: themeColors.background }]}>
+              <ThemedView style={styles.metricItem}>
+                <ThemedText style={{ fontWeight: 'semibold' }}>☔</ThemedText>
+                <ThemedView style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <ThemedText style={{ fontWeight: 'semibold' }}> Precipitation</ThemedText>
+                  <ThemedText style={{ fontWeight: 'bold' }}>0% chance</ThemedText>
+                </ThemedView>
+              </ThemedView>
+              </ThemedView>
             </ThemedView>
-          </ThemedView>
-          <ThemedView style={[styles.card, { backgroundColor: themeColors.background }]}>
-            <ThemedView style={styles.metricsGrid}>
-              <ThemedView style={styles.metricItem}><ThemedText>💨 **Wind Speed**</ThemedText><ThemedText>**15 km/h**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>💧 **Humidity**</ThemedText><ThemedText>**75%**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>🧴 **UV Index**</ThemedText><ThemedText>**8 (High)**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>☔ **Precipitation**</ThemedText><ThemedText>**0% chance**</ThemedText></ThemedView>
-            </ThemedView>
-          </ThemedView>
-          <ThemedView style={[styles.card, { backgroundColor: themeColors.background }]}>
-            <ThemedView style={styles.metricsGrid}>
-              <ThemedView style={styles.metricItem}><ThemedText>💨 **Wind Speed**</ThemedText><ThemedText>**15 km/h**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>💧 **Humidity**</ThemedText><ThemedText>**75%**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>🧴 **UV Index**</ThemedText><ThemedText>**8 (High)**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>☔ **Precipitation**</ThemedText><ThemedText>**0% chance**</ThemedText></ThemedView>
-            </ThemedView>
-          </ThemedView>
-          <ThemedView style={[styles.card, { backgroundColor: themeColors.background }]}>
-            <ThemedView style={styles.metricsGrid}>
-              <ThemedView style={styles.metricItem}><ThemedText>💨 **Wind Speed**</ThemedText><ThemedText>**15 km/h**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>💧 **Humidity**</ThemedText><ThemedText>**75%**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>🧴 **UV Index**</ThemedText><ThemedText>**8 (High)**</ThemedText></ThemedView>
-              <ThemedView style={styles.metricItem}><ThemedText>☔ **Precipitation**</ThemedText><ThemedText>**0% chance**</ThemedText></ThemedView>
-            </ThemedView>
-          </ThemedView>
-
         </ScrollView>
       </LinearGradient>
     </ThemedView>
@@ -140,9 +157,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  searchIcon: {
-    // The icon itself is styled within the ThemedText in the component
-  },
   searchInputContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -167,12 +181,12 @@ const styles = StyleSheet.create({
   },
   heroContainer: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 10,
     backgroundColor: 'transparent',
   },
   heroTemp: {
-    fontSize: 90,
-    fontWeight: '300',
+    fontSize: 100,
+    fontWeight: 'bold',
     lineHeight: 100,
   },
   heroDescription: {
@@ -217,11 +231,24 @@ const styles = StyleSheet.create({
   metricsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+    gap: 15,
+  },
+  metricCard: {
+    borderRadius: 15,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    flex: 1,
+    minWidth: '45%',
   },
   metricItem: {
-    width: '48%',
-    paddingVertical: 10,
-    marginBottom: 5,
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+    width: '100%',
   }
 });
