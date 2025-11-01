@@ -1,5 +1,4 @@
 import { ActivityIndicator, Button, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, useColorScheme } from 'react-native';
-
 import Spacer from '@/components/spacer';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -21,7 +20,6 @@ interface WeatherData {
   humidity: number;
   wind_speed: number;
   description: string;
-  // icon is not in your response, so we'll handle it
   icon?: string;
 }
 
@@ -32,7 +30,7 @@ interface ForecastData {
   description: string;
   humidity: number;
   wind_speed: number;
-  icon?: string; // Add icon if your API provides it
+  icon?: string;
 }
 
 export default function HomeScreen() {
@@ -49,41 +47,29 @@ export default function HomeScreen() {
   const fetchWeatherData = async ({ city }: { city: string }) => {
 
     const CURRENT_WEATHER_API_URL = 'https://weather-api-7pzt.onrender.com/api/weather/current';
-    // --- IMPORTANT ---
     const FORECAST_API_URL = 'https://weather-api-7pzt.onrender.com/api/weather/forecast';
+
     try {
       setLoading(true);
       setError(null);
+
       const response = await fetch(`${CURRENT_WEATHER_API_URL}/${city}`);
-      
-      // Get the raw text of the response first to avoid JSON parsing errors
-      const textResponse = await response.text();
 
       if (!response.ok) {
-        // If the response is not OK, try to parse the text as JSON for an error message,
-        // but fall back to the raw text if that fails.
-        try {
-          const errorData = JSON.parse(textResponse);
-          throw new Error(errorData.message || 'Weather data not found.');
-        } catch (e) {
-          // This will log the HTML error page content to your terminal
-          console.error("Non-JSON error response from server:", textResponse);
-          throw new Error('An error occurred while fetching weather data.');
-        }
+        console.error("Could not fetch weather data.");
+        throw new Error("Could not fetch weather data.");
       }
 
-      const data: WeatherData = JSON.parse(textResponse);
-      console.log('weather data', data);
+      const data: WeatherData = await response.json();
       setWeatherData(data);
 
       // Now, fetch the hourly forecast data
       const forecastResponse = await fetch(`${FORECAST_API_URL}/${city}`);
       if (!forecastResponse.ok) {
         console.error("Could not fetch forecast data.");
-        setHourlyForecast([]); // Clear old forecast on error
+        setHourlyForecast([]);
       } else {
-        const forecastResult = await forecastResponse.json();
-        // Assuming the array is nested under a 'forecast' key
+        const forecastResult: { forecast: ForecastData[] } = await forecastResponse.json();
         setHourlyForecast(forecastResult.forecast || []);
       }
     } catch (e: any) {
@@ -115,12 +101,12 @@ export default function HomeScreen() {
           setCity(address[0].city);
         } else {
           setError("Could not determine city from your location. Please search.");
-          setCity('Lagos'); // Set city state instead of calling fetchWeatherData directly
+          setCity('Lagos');
         }
       } else {
         // If permission is denied, set an error and fetch a default location
         setError('Permission to access location was denied. Please enable it in settings or search for a city.');
-        setCity('Lagos'); // Set city state instead of calling fetchWeatherData directly
+        setCity('Lagos');
       }
     })();
   }, []);
@@ -240,52 +226,52 @@ export default function HomeScreen() {
 
               </ThemedView>
 
-          <ThemedView style={[styles.card, { backgroundColor: themeColors.background }]}>
-            <ThemedText style={[styles.cardTitle, { color: themeColors.text }]}>Hourly Forecast</ThemedText>
+              <ThemedView style={[styles.card, { backgroundColor: themeColors.background }]}>
+                <ThemedText style={[styles.cardTitle, { color: themeColors.text }]}>Hourly Forecast</ThemedText>
 
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {hourlyForecast.map((item, index) => (
-                <ThemedView key={index} style={styles.hourlyItem}>
-                  <ThemedText style={[styles.hourlyTime, { color: themeColors.subtext, fontWeight: 'semibold' }]}>{formatTime(item.date)}</ThemedText>
-                  <ThemedText style={styles.hourlyIcon}>{weatherIcons[item.icon || ''] || '❓'}</ThemedText>
-                  <ThemedText style={[styles.hourlyTemp, { color: themeColors.text }]}>{Math.round(item.temperature)}°C</ThemedText>
-                </ThemedView>
-              ))}
-            </ScrollView>
-          </ThemedView>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  {hourlyForecast.map((item, index) => (
+                    <ThemedView key={index} style={styles.hourlyItem}>
+                      <ThemedText style={[styles.hourlyTime, { color: themeColors.subtext, fontWeight: 'semibold' }]}>{formatTime(item.date)}</ThemedText>
+                      <ThemedText style={styles.hourlyIcon}>{weatherIcons[item.icon || ''] || '❓'}</ThemedText>
+                      <ThemedText style={[styles.hourlyTemp, { color: themeColors.text }]}>{Math.round(item.temperature)}°C</ThemedText>
+                    </ThemedView>
+                  ))}
+                </ScrollView>
+              </ThemedView>
 
-            <ThemedView style={styles.metricsGrid}>
-              <ThemedView style={[styles.metricCard, { backgroundColor: themeColors.background }]}>
-                <ThemedView style={styles.metricItem}>
-                  <ThemedText style={{ fontWeight: 'semibold' }}>💨</ThemedText>
-                  <ThemedView style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                    <ThemedText style={{ fontWeight: 'semibold' }}>Wind Speed</ThemedText>
-                    <ThemedText style={{ fontWeight: 'bold' }}>
-                      {/* Assuming wind_speed is m/s, convert to km/h */}
-                      {Math.round(weatherData.wind_speed * 3.6)} km/h
-                    </ThemedText>
+              <ThemedView style={styles.metricsGrid}>
+                <ThemedView style={[styles.metricCard, { backgroundColor: themeColors.background }]}>
+                  <ThemedView style={styles.metricItem}>
+                    <ThemedText style={{ fontWeight: 'semibold' }}>💨</ThemedText>
+                    <ThemedView style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                      <ThemedText style={{ fontWeight: 'semibold' }}>Wind Speed</ThemedText>
+                      <ThemedText style={{ fontWeight: 'bold' }}>
+                        {/* Assuming wind_speed is m/s, convert to km/h */}
+                        {Math.round(weatherData.wind_speed * 3.6)} km/h
+                      </ThemedText>
+                    </ThemedView>
+                  </ThemedView>
+                </ThemedView>
+                <ThemedView style={[styles.metricCard, { backgroundColor: themeColors.background }]}>
+                  <ThemedView style={styles.metricItem}>
+                    <ThemedText style={{ fontWeight: 'semibold' }}>💧</ThemedText>
+                    <ThemedView style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                      <ThemedText style={{ fontWeight: 'semibold' }}>Humidity</ThemedText>
+                      <ThemedText style={{ fontWeight: 'bold' }}>{weatherData.humidity}%</ThemedText>
+                    </ThemedView>
+                  </ThemedView>
+                </ThemedView>
+                <ThemedView style={[styles.metricCard, { backgroundColor: themeColors.background, justifyContent: 'center' }]}>
+                  <ThemedView style={styles.metricItem}>
+                    <ThemedText style={{ fontWeight: 'semibold' }}>📍</ThemedText>
+                    <ThemedView style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                      <ThemedText style={{ fontWeight: 'semibold' }}>Coordinates</ThemedText>
+                      <ThemedText style={{ fontWeight: 'bold' }}>{weatherData.coordinates.lat.toFixed(2)}, {weatherData.coordinates.lon.toFixed(2)}</ThemedText>
+                    </ThemedView>
                   </ThemedView>
                 </ThemedView>
               </ThemedView>
-              <ThemedView style={[styles.metricCard, { backgroundColor: themeColors.background }]}>
-                <ThemedView style={styles.metricItem}>
-                  <ThemedText style={{ fontWeight: 'semibold' }}>💧</ThemedText>
-                  <ThemedView style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                    <ThemedText style={{ fontWeight: 'semibold' }}>Humidity</ThemedText>
-                    <ThemedText style={{ fontWeight: 'bold' }}>{weatherData.humidity}%</ThemedText>
-                  </ThemedView>
-                </ThemedView>
-              </ThemedView>
-              <ThemedView style={[styles.metricCard, { backgroundColor: themeColors.background, justifyContent: 'center' }]}>
-                <ThemedView style={styles.metricItem}>
-                  <ThemedText style={{ fontWeight: 'semibold' }}>📍</ThemedText>
-                  <ThemedView style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                    <ThemedText style={{ fontWeight: 'semibold' }}>Coordinates</ThemedText>
-                    <ThemedText style={{ fontWeight: 'bold' }}>{weatherData.coordinates.lat.toFixed(2)}, {weatherData.coordinates.lon.toFixed(2)}</ThemedText>
-                  </ThemedView>
-                </ThemedView>
-              </ThemedView>
-            </ThemedView>
             </>
           )}
         </ScrollView>
@@ -346,7 +332,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   errorText: {
-    textAlign: 'center', color: 'red', fontSize: 16
+    textAlign: 'center',
+    color: 'red',
+    fontSize: 16
   },
   heroContainer: {
     alignItems: 'center',
